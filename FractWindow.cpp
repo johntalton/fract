@@ -22,6 +22,7 @@
 #include "Globals.h"
 #include "FractWindow.h"
 #include "FractView.h"
+#include "TPreferences.h"
 
 /*******************************************************
 *   Our wonderful BWindow, ya its kewl like that.
@@ -29,7 +30,7 @@
 *   let the view take over.  We also nead some message
 *   redirection and handling
 *******************************************************/
-FractWindow::FractWindow(BRect frame) : BWindow(frame,"YNOP's Fractal",B_TITLED_WINDOW,B_NOT_ZOOMABLE|B_NOT_RESIZABLE|B_ASYNCHRONOUS_CONTROLS){//
+FractWindow::FractWindow(BRect frame) : BWindow(frame,"YNOP's Fractal",B_TITLED_WINDOW,B_ASYNCHRONOUS_CONTROLS){//|B_NOT_ZOOMABLE|B_NOT_RESIZABLE
    BRect r;
    BMenu *menu;
    BMenuItem *item;
@@ -93,22 +94,13 @@ void FractWindow::MessageReceived(BMessage* msg){
 *   and tell the main be_app to shut it all down .. bye
 *******************************************************/
 bool FractWindow::QuitRequested(){
-   BPath path;
-   int ref;
-
-   if(find_directory (B_USER_SETTINGS_DIRECTORY, &path, true) == B_OK) {
-      path.Append("Fract_settings");
-      ref = creat(path.Path(), 0777);
-      if (ref >= 0) {
-         BRect frm = Frame();
-         //frm = ConvertToScreen(frm);
-         write(ref, (char *)&frm, sizeof(frm));
-         close(ref);
-      }
+   TPreferences prefs("Fract_prefs");
+   if (prefs.InitCheck() != B_OK) {
    }
+   prefs.SetRect("window_pos", Frame());
+
    be_app->Lock();
    be_app->Quit();
    be_app->Unlock();
-   //be_app->PostMessage(B_QUIT_REQUESTED);
    return true;
 }

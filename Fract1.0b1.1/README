@@ -1,5 +1,7 @@
 Fract1.0 (beta1.x)
 
+Note: This is not the fastest fractal view. But for getting relly high res, high color fractal screenshots this is one of the best around. I spend a lot of time getting the color palette code to work right.  
+
 Ok, This is a port of my old OpenGL fractal program that I wrote a while back. See the one that comes with Be is just not up to the task of realy finding kewl fract pix.  They (in my opinon) didn't spend a lot of time on the depth and the pallete. Thats what makes good fract programs. So I am proting my code over. Its prity fast and looks good. I am thinking of takeing advantage of a few Be things. Threads for example, the Mandelbrot set is highly threadable (a thread for each pixel would do it). Also I have seen int64 in there some place. This would increase the depth by Alot. So we will se what I have time for.  
 
 I didn't use any of the Be code if you were wandering.   

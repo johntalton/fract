@@ -1,11 +1,13 @@
 /*******************************************************
 *   Fract©
 *
-*   Niffty passwd cracker with threads :)
+*   This is a port of my fractal that I originaly did
+*   in OpenGL (GLUT) for my Compter Science Graphics 
+*   Class. 
 *
 *   @author  TheAbstractCompany, YNOP(ynop@acm.org) 
 *   @vertion beta
-*   @date    November 5 1999
+*   @date    November 14 1999
 *******************************************************/
 #include <AppKit.h>
 #include <InterfaceKit.h>
@@ -13,38 +15,35 @@
 #include <Alert.h>
 #include <Application.h>
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
+#include <stdio.h>
 
 #include "Fract.h"
 #include "FractWindow.h"
+#include "TPreferences.h"
 
 /*******************************************************
 *
 *******************************************************/
 Fract::Fract() : BApplication(APP_SIGNATURE){
    BRect wind_pos;
-   BPath path;
-   int ref;
+
    BRect defaultSize(50,50,450,450);
 
-   if(find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
-      path.Append("Fract_settings");
-      ref = open(path.Path(),O_RDONLY);
-      if(ref >= 0){
-         read(ref, (char *)&wind_pos, sizeof(wind_pos));
-         close(ref);
-         if(!wind_pos.Intersects(BScreen().Frame())){
-            theWin = new FractWindow(defaultSize);
-         }else{
-            theWin = new FractWindow(wind_pos);
-         }
-      }else{ // hmm that was not in there
-         theWin = new FractWindow(defaultSize);
-      }
-   }else{ // gess there are no defaults ..first time?
+   TPreferences prefs("Fract_prefs");
+   if (prefs.InitCheck() != B_OK) {
+      // New User!
+   }
+
+   if(prefs.FindRect("window_pos", &wind_pos) != B_OK){
+      wind_pos = defaultSize;
+   }
+   
+   if(!wind_pos.Intersects(BScreen().Frame())){
+      (new BAlert(NULL,"The window was somehow off the screen. We reset it position for you","Thanks"))->Go();
       theWin = new FractWindow(defaultSize);
+   }else{
+      // this is the normal start up.
+      theWin = new FractWindow(wind_pos);
    }
 }
 
